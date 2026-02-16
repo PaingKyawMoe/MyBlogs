@@ -10,13 +10,13 @@ namespace MyBlogs.Models
 
         [Required(ErrorMessage ="The username is required")]
         [MaxLength(100,ErrorMessage ="The username is not exceed 100 characters")]
-        public string UserName { get; set; }
+        public string? UserName { get; set; }
 
         [DataType(DataType.Date)]
         public DateTime CommentDate { get; set; }
 
         [Required]
-        public string Content { get; set; }
+        public string? Content { get; set; }
 
 
         [ForeignKey("Post")]

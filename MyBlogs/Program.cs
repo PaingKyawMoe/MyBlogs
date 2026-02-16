@@ -1,6 +1,12 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using MyBlogs.Data;
+using MyBlogs.Infrastructure;
+using MyBlogs.Infrastructure.Interfaces;
+using MyBlogs.Repositories;
+using MyBlogs.Repositories.Interfaces;
+using MyBlogs.Services;
+using MyBlogs.Services.Interfaces;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -20,6 +26,9 @@ builder.Services.AddIdentity<IdentityUser, IdentityRole>(options => {
     options.Password.RequiredLength = 1;
 }).AddEntityFrameworkStores<AppDbContext>();
 
+builder.Services.AddScoped<IPostRepository, PostRepository>();
+builder.Services.AddScoped<IFileService, FileService>();
+builder.Services.AddScoped<IPostService, PostService>();
 
 builder.Services.ConfigureApplicationCookie(options =>
 {
