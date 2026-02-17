@@ -12,7 +12,7 @@ namespace MyBlogs.Controllers
 
         //register
         //login
-        //logout
+        //logout 
         public AuthController(UserManager<IdentityUser> userManager,
             RoleManager<IdentityRole> roleManager,
             SignInManager<IdentityUser> signInManager)

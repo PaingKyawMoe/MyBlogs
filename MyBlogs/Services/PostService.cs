@@ -51,6 +51,7 @@ namespace MyBlogs.Services
             existing.Title = model.Post.Title;
             existing.Content = model.Post.Content;
             existing.CategoryId = model.Post.CategoryId;
+            existing.Author = model.Post.Author;
 
             if (model.FeatureImage != null)
             {
