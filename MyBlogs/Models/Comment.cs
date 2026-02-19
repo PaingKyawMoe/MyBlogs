@@ -23,5 +23,12 @@ namespace MyBlogs.Models
         public int PostId { get; set; }
 
         public Post Post { get; set; }
+
+        public int? ParentId { get; set; } // Null for main comments, ID of parent for replies
+
+        [ForeignKey("ParentId")]
+        public virtual Comment? Parent { get; set; }
+
+        public virtual ICollection<Comment> Replies { get; set; } = new List<Comment>();
     }
 }

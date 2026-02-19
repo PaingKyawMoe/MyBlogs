@@ -173,3 +173,30 @@ body {
     padding-right: 3rem !important;
 }
 
+/* Comment Section */
+.content-wrapper {
+    padding: 20px;
+    max-width: 1000px;
+    margin: 0 auto;
+    font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
+}
+
+.feature-image {
+    height: 500px;
+    width: 100%;
+    object-fit: cover;
+    margin-bottom: 20px;
+}
+
+/* Professional indent for replies */
+.reply-indent {
+    margin-left: 3rem;
+    border-left: 3px solid #0dcaf0; /* Cyan line to connect replies */
+}
+
+.comment-card {
+    transition: transform 0.2s;
+}
+
+
+
