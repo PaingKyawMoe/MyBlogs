@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.EntityFrameworkCore;
 using MyBlogs.Infrastructure.Interfaces;
 using MyBlogs.Models;
 using MyBlogs.Models.ViewModels;
@@ -99,6 +100,20 @@ namespace MyBlogs.Services
                     Text = c.Name
                 }).ToList()
             };
+        }
+        public async Task<int> LikePostAsync(int id)
+        {
+            // 1. Use _repo instead of _context
+            var post = await _repo.GetByIdAsync(id);
+
+            if (post != null)
+            {
+                post.LikeCount++;
+                // 2. Use the repo's save method
+                await _repo.SaveAsync();
+                return post.LikeCount;
+            }
+            return 0;
         }
 
     }

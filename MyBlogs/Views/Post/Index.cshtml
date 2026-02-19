@@ -2,11 +2,18 @@
 @using MyBlogs.Helpers
 @{
     ViewData["Title"] = "Blog Posts";
+    
+    // Extract pagination data from ViewBag
+
+    int currentPage = ViewBag.CurrentPage ?? 1;
+    int totalPages = ViewBag.TotalPages ?? 1;
+    int? currentCategoryId = ViewBag.CurrentCategoryId;
 }
 
 <div class="text-center m-3">
+    @* "All" Filter Button *@
     <a asp-controller="Post" asp-action="Index" asp-route-categoryId="" 
-       class="badge bg-secondary text-white text-decoration-none">All</a>
+       class="badge @(currentCategoryId == null ? "bg-primary" : "bg-secondary") text-white text-decoration-none">All</a>
 
     @if (ViewBag.Categories != null)
     {    
@@ -15,7 +22,7 @@
             <a asp-controller="Post" 
                asp-action="Index" 
                asp-route-categoryId="@category.Id"
-               class="badge bg-warning text-dark text-decoration-none ms-2">
+               class="badge @(currentCategoryId == category.Id ? "bg-primary text-white" : "bg-warning text-dark") text-decoration-none ms-2">
                @category.Name
             </a>
         }
@@ -24,41 +31,83 @@
 
 <div class="container">
     @if(User.IsInRole("Admin")){
-    <div class="text-end my-2">
-        <a class="btn btn-primary" asp-action="Create" asp-controller="Post">Create New Post</a>
-    </div>
+        <div class="text-end my-2">
+            <a class="btn btn-primary" asp-action="Create" asp-controller="Post">Create New Post</a>
+        </div>
     }
+
+    @* Blog Post Grid *@
     <div class="row row-cols-1 row-cols-md-3 g-4">
         @foreach(var post in Model)
         {
-           <div class="col">
-               <div class="card h-100 border-0 shadow-lg rounded-1">
+            <div class="col">
+                <div class="card h-100 border-0 shadow-lg rounded-1">
                      <img src="@post.FeatureImagePath" class="card-img-top" alt="@post.Title"
                           style="height:200px; object-fit:cover"/>
                      <div class="card-body">
                          <h5 class="card-title">@post.Title</h5>
-                         <p class="text-muted mb-2">Published on @post.PublishedDate.ToString("MMM dd,yyyy")</p>
+                         <p class="text-muted mb-2">Published on @post.PublishedDate.ToString("MMM dd, yyyy")</p>
 
                          @{
                             var content = RemoveHtmlTagHelper.RemoveHtmlTags(post.Content);
                          }
 
-
                          <p class="card-text">
-
                              @(content.Length > 100 ? content.Substring(0, 100) + "..." : content)
-
                          </p>
                          <span class="badge bg-secondary">@post.Category?.Name</span>
                      </div>
-                   <div class="card-footer d-flex justify-content-between align-items-center">
-                       <a class="btn btn-primary btn-sm" asp-action="Detail" asp-controller="Post" asp-route-id="@post.Id">Read More</a>
-                       <div class="text-end">
-                           <div class="text-muted">By @post.Author</div>
-                       </div>
-                   </div>
-               </div>
-           </div>
+                    <div class="card-footer d-flex justify-content-between align-items-center">
+                        <div>
+                            <a class="btn btn-primary btn-sm" asp-action="Detail" asp-controller="Post" asp-route-id="@post.Id">Read More</a>
+
+                            @* The Like Button *@
+       <button class="btn btn-outline-danger btn-sm like-btn d-inline-flex align-items-center" data-id="@post.Id">
+    <i class="bi bi-heart me-2"></i> 
+    <span class="like-count-@post.Id">@post.LikeCount</span>
+</button>
+                        </div>
+                        <div class="text-end">
+                            <div class="text-muted">By @post.Author</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
         }
     </div>
+
+    @* Pagination Controls *@
+    @if (totalPages > 1)
+    {
+        <div class="mt-5">
+            <nav aria-label="Blog pagination">
+                <ul class="pagination justify-content-center">
+                    
+                    @* Previous Button *@
+                    <li class="page-item @(currentPage == 1 ? "disabled" : "")">
+                        <a class="page-link" asp-action="Index" 
+                           asp-route-page="@(currentPage - 1)" 
+                           asp-route-categoryId="@currentCategoryId">Prev</a>
+                    </li>
+
+                    @* Page Numbers *@
+                    @for (int i = 1; i <= totalPages; i++)
+                    {
+                        <li class="page-item @(i == currentPage ? "active" : "")">
+                            <a class="page-link" asp-action="Index" 
+                               asp-route-page="@i" 
+                               asp-route-categoryId="@currentCategoryId">@i</a>
+                        </li>
+                    }
+
+                    @* Next Button *@
+                    <li class="page-item @(currentPage == totalPages ? "disabled" : "")">
+                        <a class="page-link" asp-action="Index" 
+                           asp-route-page="@(currentPage + 1)" 
+                           asp-route-categoryId="@currentCategoryId">Next</a>
+                    </li>
+                </ul>
+            </nav>
+        </div>
+    }
 </div>

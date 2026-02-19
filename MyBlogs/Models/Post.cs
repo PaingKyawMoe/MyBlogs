@@ -37,5 +37,9 @@ namespace MyBlogs.Models
 
         [ValidateNever]
         public ICollection<Comment>? Comments { get; set; }
+
+        public int LikeCount { get; set; } = 0;
+
+
     }
 }

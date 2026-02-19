@@ -13,6 +13,7 @@ namespace MyBlogs.Services.Interfaces
         Task AddCommentAsync(Comment comment);
         Task<EditViewModel?> GetEditModelAsync(int id);
         Task<List<Category>> GetCategoriesAsync();
+        Task<int> LikePostAsync(int id);
 
     }
 
