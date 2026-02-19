@@ -4,48 +4,53 @@
     ViewData["Title"] = "Login";
 }
 
-<style>
-    .content-wrapper {
-        padding: 20px;
-        max-width: 1000px;
-        margin: 0 auto;
-        font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
-    }
-</style>
 
 
-<div class="content-wrapper">
-    <div class="row">
-        <div class="col-6">
-            <h2>@ViewData["Title"]</h2>
+<div class="login-container mt-4">
+    <div class="glass-card">
+        <div class="text-center mb-4">
+            <h2 class="fw-bold">Welcome Back</h2>
+            <p class="text-muted">Please enter your details</p>
         </div>
-        <div class="col-6 text-end">
-            <a class="btn btn-primary" asp-action="Index" asp-controller="Post">Back to List</a>
+
+        <form asp-action="Login" asp-controller="Auth" method="post">
+            <div asp-validation-summary="All" class="text-danger small mb-3"></div>
+
+            <div class="mb-3">
+                <label asp-for="Email" class="form-label text-light small">Email Address</label>
+                <input asp-for="Email" class="form-control" placeholder="name@example.com" />
+                <span asp-validation-for="Email" class="text-danger small"></span>
+            </div>
+
+            <div class="mb-4">
+                <label asp-for="Password" class="form-label text-light small fw-medium">Password</label>
+                @* Find this part in your Login.cshtml and update the button class *@
+                <div class="position-relative">
+                    <input asp-for="Password" type="password" class="form-control pe-5" placeholder="••••••••" />
+                    <button type="button" class="btn position-absolute top-50 end-0 translate-middle-y text-muted border-0 bg-transparent pe-3 toggle-password-btn">
+                        <i class="bi bi-eye eye-icon"></i>
+                    </button>
+                </div>
+                <span asp-validation-for="Password" class="text-danger small"></span>
+            </div>
+
+            <button type="submit" class="btn btn-primary btn-login w-100 mb-3">Login</button>
+        </form>
+
+        <div class="divider">or continue with</div>
+
+        @* Social Login Buttons *@
+        <a href="/Auth/ExternalLogin?provider=Google" class="social-btn w-100">
+            <i class="bi bi-google text-danger"></i>Google
+        </a>
+        <a href="/Auth/ExternalLogin?provider=GitHub" class="social-btn w-100">
+            <i class="bi bi-github"></i>GitHub
+        </a>
+
+        <div class="text-center mt-4">
+            <a asp-action="Index" asp-controller="Post" class="text-muted small text-decoration-none">
+                <i class="bi bi-arrow-left"></i>Back to Blog
+            </a>
         </div>
     </div>
-    <hr />
-
-    <form asp-action="Login" asp-controller="Auth" method="post">
-        <div class="validation-summary">
-            <div asp-validation-summary="All" class="text-danger"></div>
-
-        </div>
-        <div class="form-group">
-            <label asp-for="Email"></label>
-            <input asp-for="Email" class="form-control" />
-            <span asp-validation-for="Email" class="text-danger"></span>
-        </div>
-
-        <div class="form-group">
-            <label asp-for="Password"></label>
-            <input asp-for="Password" class="form-control" />
-            <span asp-validation-for="Password" class="text-danger"></span>
-        </div>
-
-
-        <button type="submit" class="btn btn-primary mt-1">Login</button>
-        <a class="btn btn-secondary mt-1" asp-action="Index" asp-controller="Post">Back to List</a>
-    </form>
 </div>
-
-

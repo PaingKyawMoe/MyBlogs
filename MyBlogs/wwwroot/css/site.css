@@ -29,21 +29,21 @@ body {
 .form-floating > .form-control-plaintext:focus::placeholder, .form-floating > .form-control:focus::placeholder {
   text-align: start;
 }
-/* 1. Change the color of the numbers/links */
+
+
+/* PAGINATION */
 .pagination .page-link {
     color: #333; /* Dark text */
     background-color: #fff;
     border: 1px solid #dee2e6;
 }
 
-    /* 2. Change the color when hovering over numbers */
     .pagination .page-link:hover {
         color: #000;
         background-color: #f8f9fa;
         border-color: #dee2e6;
     }
 
-/* 3. Change the "Active" page color */
 .pagination .page-item.active .page-link {
     z-index: 3;
     color: #fff;
@@ -51,10 +51,125 @@ body {
     border-color: black;
 }
 
-/* 4. Change the "Disabled" button color */
 .pagination .page-item.disabled .page-link {
     color: #6c757d;
     pointer-events: none;
     background-color: #fff;
     border-color: #dee2e6;
 }
+
+
+/* LOGIN FROM */
+
+body {
+    /* This creates a nice background for the blur to work against */
+    background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+    min-height: 100vh;
+}
+
+.login-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 80vh;
+}
+
+.glass-card {
+    background: rgba(255, 255, 255, 0.05);
+    backdrop-filter: blur(15px);
+    -webkit-backdrop-filter: blur(15px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 20px;
+    padding: 40px;
+    width: 100%;
+    max-width: 450px;
+    box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.8);
+}
+
+.form-control {
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    color: white !important;
+    border-radius: 10px;
+    padding: 12px;
+}
+
+    .form-control:focus {
+        background: rgba(255, 255, 255, 0.15);
+        border-color: #3b82f6;
+        box-shadow: 0 0 0 0.25rem rgba(59, 130, 246, 0.25);
+    }
+
+.btn-login {
+    background: #3b82f6;
+    border: none;
+    padding: 12px;
+    border-radius: 10px;
+    font-weight: bold;
+    transition: 0.3s;
+}
+
+    .btn-login:hover {
+        background: #2563eb;
+        transform: translateY(-2px);
+    }
+
+.social-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    color: white;
+    padding: 10px;
+    border-radius: 10px;
+    text-decoration: none;
+    margin-top: 10px;
+    transition: 0.3s;
+}
+
+    .social-btn:hover {
+        background: rgba(255, 255, 255, 0.15);
+        color: white;
+    }
+
+.divider {
+    display: flex;
+    align-items: center;
+    text-align: center;
+    margin: 20px 0;
+    color: rgba(255, 255, 255, 0.4);
+}
+
+    .divider::before, .divider::after {
+        content: '';
+        flex: 1;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .divider:not(:empty)::before {
+        margin-right: .5em;
+    }
+
+    .divider:not(:empty)::after {
+        margin-left: .5em;
+    }
+
+/* Ensure the button doesn't have a blue border or background when clicked */
+#toggle-password:focus {
+    box-shadow: none;
+    color: #3b82f6 !important;
+}
+
+#toggle-password {
+    z-index: 10;
+    cursor: pointer;
+    transition: color 0.2s;
+}
+
+/* Add extra padding to the right of the input so text doesn't hide under the eye */
+.pe-5 {
+    padding-right: 3rem !important;
+}
+
