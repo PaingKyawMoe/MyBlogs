@@ -1,8 +1,7 @@
 ﻿@model Post
- @{
+@{
     ViewData["Title"] = Model.Title;
 }
-
 
 <style>
     .content-wrapper {
@@ -18,104 +17,120 @@
         object-fit: cover;
         margin-bottom: 20px;
     }
+
+    /* Professional indent for replies */
+    .reply-indent {
+        margin-left: 3rem;
+        border-left: 3px solid #0dcaf0; /* Cyan line to connect replies */
+    }
+
+    .comment-card {
+        transition: transform 0.2s;
+    }
 </style>
 
-
-
-
 <div class="content-wrapper">
-    @if(User.IsInRole("Admin"))
+    @if (User.IsInRole("Admin"))
     {
-    <div class="text-end">
-        <a class="btn btn-secondary my-3" asp-controller="Post" asp-action="Edit" asp-route-id="@Model.Id">Edit Post</a>
-        <a class="btn btn-danger my-3" asp-controller="Post" asp-action="Delete" asp-route-id="@Model.Id">Delete</a>
-    </div>
+        <div class="text-end">
+            <a class="btn btn-secondary my-3" asp-controller="Post" asp-action="Edit" asp-route-id="@Model.Id">Edit Post</a>
+            <a class="btn btn-danger my-3" asp-controller="Post" asp-action="Delete" asp-route-id="@Model.Id">Delete</a>
+        </div>
     }
+
     <h1>@Model.Title</h1>
     <p>
-        <span class="badge bg-primary">By:</span>@Model.Author | 
-        <span class="badge bg-primary">Published On:</span>@Model.PublishedDate.ToString("MMMM dd,yyyy")
+        <span class="badge bg-primary">By:</span> @Model.Author | 
+        <span class="badge bg-primary">Published On:</span> @Model.PublishedDate.ToString("MMMM dd, yyyy")
     </p>
-    <p><span class="badge bg-secondary">Category</span>@Model.Category.Name</p>
+    <p><span class="badge bg-secondary">Category</span> @Model.Category.Name</p>
+    
     <img src="@Model.FeatureImagePath" alt="@Model.Title" class="feature-image" />
     <hr />
 
     <div>@Html.Raw(Model.Content)</div>
     <hr />
 
-    @if(@Model.Comments.Any())
-    {
     <div id="commentSection">
-        @foreach(var comment in Model.Comments)
+        <h3 class="mb-4">Comments (@Model.Comments.Count)</h3>
+
+        @if (Model.Comments.Any())
         {
-            <div class="card mb-3 shadow-sm">
-                <div class="card-body">
-                    <h5 class="card-title">@comment.UserName</h5>
-                    <p class="card-text text-muted">@comment.CommentDate.ToString("MMMM dd,yyyy")</p>
-                    <p class="card-text">@comment.Content</p>
+            @* 1. Loop through Top-Level Comments *@
+            @foreach (var comment in Model.Comments.Where(c => c.ParentId == null))
+            {
+                <div class="card mb-3 shadow-sm border-0 bg-dark text-white comment-card">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between">
+                            <h5 class="card-title text-info">@comment.UserName</h5>
+                            <small class="text-muted">@comment.CommentDate.ToString("MMM dd, yyyy")</small>
+                        </div>
+                        <p class="card-text">@comment.Content</p>
+                        
+                        @if (User.Identity.IsAuthenticated)
+                        {
+                            <button class="btn btn-sm btn-outline-info reply-btn" 
+                                    data-id="@comment.Id" 
+                                    data-user="@comment.UserName">
+                                <i class="bi bi-reply"></i> Reply
+                            </button>
+                        }
+                    </div>
                 </div>
-            </div>
+
+                @* 2. Loop through Replies for THIS comment *@
+                @foreach (var reply in Model.Comments.Where(c => c.ParentId == comment.Id))
+                {
+                    <div class="card mb-2 shadow-sm reply-indent bg-secondary bg-opacity-10 text-white border-0">
+                        <div class="card-body py-2">
+                            <div class="d-flex align-items-center mb-1">
+                                <h6 class="fw-bold mb-0 text-info">@reply.UserName</h6>
+                                <span class="badge bg-info text-dark ms-2" style="font-size: 0.6rem;">REPLY</span>
+                                <small class="text-muted ms-auto">@reply.CommentDate.ToString("MMM dd")</small>
+                            </div>
+                            <p class="mb-0 small">@reply.Content</p>
+                        </div>
+                    </div>
+                }
+            }
+        }
+        else
+        {
+            <p class="text-muted">No comments yet. Be the first to comment!</p>
         }
     </div>
-    }
-    else
-    {
-    <p class="text-muted">No comments yet.Be the first to comment</p>
-    }
-    @if(User.Identity.IsAuthenticated)
-    {
-    <h4>Add a comment</h4>
-    <form id="commentForm">
-        <div class="form-group">
-            <label for="userName">Name</label>
-            <input id="userName" name="userName" required class="form-control" />
-        </div>
 
-        <div class="form-group">
-            <label for="Content">Content</label>
-            <textarea for="Content" id="Content" name="Content" rows="3" required class="form-control"></textarea>
-        </div>
+    @if (User.Identity.IsAuthenticated)
+    {
+        <div class="mt-5 p-4 bg-dark rounded border border-secondary">
+            
+            <div id="replyIndicator" class="alert alert-info d-none d-flex justify-content-between align-items-center">
+                <span><i class="bi bi-chat-left-dots"></i> Replying to <strong id="replyingToUser"></strong></span>
+                <button type="button" class="btn-close" id="btnCancelReply" aria-label="Close"></button>
+            </div>
 
-        <button type="submit" class="btn btn-primary mt-2 p-2 rounded">Submit Comment</button>
-    </form>
+            <h4 id="formTitle">Add a comment</h4>
+            
+            <form id="commentForm" data-post-id="@Model.Id" data-url="@Url.Action("AddComment", "Post")">
+                @* Hidden field to store the ParentId *@
+                <input type="hidden" id="parentId" name="parentId" value="" />
+
+                <div class="form-group mb-3">
+                    <label for="userName" class="text-white">Name</label>
+                    <input id="userName" name="userName" required class="form-control bg-dark text-white border-secondary"/>
+                </div>
+
+                <div class="form-group mb-3">
+                    <label for="Content" class="text-white">Content</label>
+                    <textarea id="Content" name="Content" rows="3" required class="form-control bg-dark text-white border-secondary" placeholder="Write your message here..."></textarea>
+                </div>
+
+                <button type="submit" id="submitBtn" class="btn btn-primary w-100">Submit Comment</button>
+            </form>
+        </div>
     }
 </div>
 
 @section Scripts {
-    <script>
-        $(document).ready(function () {
-            $("#commentForm").on('submit', function (event) {
-                event.preventDefault();
-                var userName = $("#userName").val();
-                var content = $("#Content").val();
-                var postId = @Model.Id;
-
-                $.ajax({
-                    //https:localhost:7049/Post/AddComment
-                    url: '@Url.Action("AddComment","Post")',
-                    type: 'POST',
-                    contentType: 'application/json',
-                    data: JSON.stringify({
-                        Username: userName,
-                        Content: content,
-                        PostId: postId
-                    }),
-                    success: function (response) {
-                        $('#commentForm')[0].reset();
-                        $('#commentSection').append(
-                            `
-                            <div class="card mb-3 shadow-sm">
-                                <div class="card-body">
-                                <h5 class="card-title">${response.username}</h5>
-                                <p class="card-text text-muted">${response.commentDate}</p>
-                                <p class="card-text">${response.content}</p>
-                                </div>
-                            </div>
-                            `
-                        )
-                    }
-                })
-            });
-        });
-    </script>
+    
 }

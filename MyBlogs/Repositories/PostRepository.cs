@@ -24,12 +24,11 @@ namespace MyBlogs.Repositories
             return await query.ToListAsync();
         }
 
-
         public async Task<Post?> GetDetailAsync(int id)
         {
             return await _context.Posts
                 .Include(p => p.Category)
-                .Include(p => p.Comments)
+                .Include(p => p.Comments.OrderBy(c => c.CommentDate)) // Load and sort comments
                 .FirstOrDefaultAsync(p => p.Id == id);
         }
 
@@ -58,10 +57,7 @@ namespace MyBlogs.Repositories
         {
             return await _context.Categories.ToListAsync();
         }
-
-
-
-
+      
 
         public async Task SaveAsync()
             => await _context.SaveChangesAsync();
