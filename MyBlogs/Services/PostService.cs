@@ -5,6 +5,7 @@ using MyBlogs.Models;
 using MyBlogs.Models.ViewModels;
 using MyBlogs.Repositories.Interfaces;
 using MyBlogs.Services.Interfaces;
+using MyBlogs.Helpers;
 
 namespace MyBlogs.Services
 {
@@ -12,6 +13,9 @@ namespace MyBlogs.Services
     {
         private readonly IPostRepository _repo;
         private readonly IFileService _fileService;
+
+        public async Task<Post?> GetBySlugAsync(string slug)
+        => await _repo.GetBySlugAsync(slug);
 
         public PostService(IPostRepository repo, IFileService fileService)
         {
@@ -30,12 +34,16 @@ namespace MyBlogs.Services
             if (!_fileService.IsValidExtension(model.FeatureImage.FileName))
                 throw new Exception("Invalid image format.");
 
+            // GENERATE SLUG HERE
+            model.Post.Slug = UrlHelper.GenerateSlug(model.Post.Title);
+
             model.Post.FeatureImagePath =
                 await _fileService.UploadAsync(model.FeatureImage);
 
             await _repo.AddAsync(model.Post);
             await _repo.SaveAsync();
         }
+
         public async Task<List<Category>> GetCategoriesAsync()
         {
             return await _repo.GetCategoriesAsync();
@@ -53,6 +61,9 @@ namespace MyBlogs.Services
             existing.Content = model.Post.Content;
             existing.CategoryId = model.Post.CategoryId;
             existing.Author = model.Post.Author;
+
+            // UPDATE SLUG IF TITLE CHANGES
+            existing.Slug = UrlHelper.GenerateSlug(model.Post.Title);
 
             if (model.FeatureImage != null)
             {

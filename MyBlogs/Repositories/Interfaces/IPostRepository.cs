@@ -7,6 +7,7 @@ namespace MyBlogs.Repositories.Interfaces
         Task<List<Post>> GetAllAsync(int? categoryId);
         Task<Post?> GetDetailAsync(int id);
         Task<Post?> GetByIdAsync(int id);
+        Task<Post?> GetBySlugAsync(string slug);
         Task AddAsync(Post post);
         Task UpdateAsync(Post post);
         Task DeleteAsync(Post post);

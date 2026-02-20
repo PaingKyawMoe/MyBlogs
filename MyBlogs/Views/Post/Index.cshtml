@@ -59,7 +59,12 @@
                      </div>
                     <div class="card-footer d-flex justify-content-between align-items-center">
                         <div>
-                            <a class="btn btn-primary btn-sm" asp-action="Detail" asp-controller="Post" asp-route-id="@post.Id">Read More</a>
+                           <a class="btn btn-primary btn-sm" 
+   asp-action="Detail" 
+   asp-controller="Post" 
+   asp-route-slug="@(string.IsNullOrEmpty(post.Slug) ? post.Id.ToString() : post.Slug)">
+   Read More
+</a>
 
                             @* The Like Button *@
        <button class="btn btn-outline-danger btn-sm like-btn d-inline-flex align-items-center" data-id="@post.Id">

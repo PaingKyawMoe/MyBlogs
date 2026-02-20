@@ -95,14 +95,31 @@ namespace MyBlogs.Controllers
         }
 
 
-        public async Task<IActionResult> Detail(int id)
+        // Change 'int id' to 'string slug'
+        public async Task<IActionResult> Detail(string slug)
         {
-            var post = await _service.GetDetailAsync(id);
+            if (string.IsNullOrEmpty(slug)) return NotFound();
+
+            Post? post;
+
+            // 1. Check if the string is actually a number (like "4")
+            if (int.TryParse(slug, out int id))
+            {
+                // If it's a number, use your existing ID-based service method
+                post = await _service.GetDetailAsync(id);
+            }
+            else
+            {
+                // If it's text, use your slug-based service method
+                post = await _service.GetBySlugAsync(slug);
+            }
+
             if (post == null) return NotFound();
+
             return View(post);
         }
 
-        
+
         [HttpPost]
         [Authorize]
         public async Task<JsonResult> AddComment([FromBody] Comment comment)

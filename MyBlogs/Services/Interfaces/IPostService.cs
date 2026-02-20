@@ -7,6 +7,7 @@ namespace MyBlogs.Services.Interfaces
     {
         Task<List<Post>> GetPostsAsync(int? categoryId);
         Task<Post?> GetDetailAsync(int id);
+        Task<Post?> GetBySlugAsync(string slug);
         Task CreateAsync(PostViewModel model);
         Task UpdateAsync(EditViewModel model);
         Task DeleteAsync(int id);

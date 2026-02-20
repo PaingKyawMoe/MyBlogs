@@ -30,6 +30,7 @@ namespace MyBlogs.Data
                 {
                     Id = 1,
                     Title = "Tech Post 1",
+                    Slug = "tech-post-1",
                     Content = "Content of Tech Post 1",
                     Author = "Paing Kyaw",
                     PublishedDate = new DateTime(2023, 1, 1), // Static date instead of DateTime.Now
@@ -40,6 +41,7 @@ namespace MyBlogs.Data
                 {
                     Id = 2,
                     Title = "Health Post 1",
+                    Slug = "health-post-1",
                     Content = "Content of Health Post 1",
                     Author = "Jane Doe",
                     PublishedDate = new DateTime(2023, 1, 1), // Static date
@@ -50,6 +52,7 @@ namespace MyBlogs.Data
                 {
                     Id = 3,
                     Title = "Lifestyle Post 1",
+                    Slug = "lifestyle-post-1",
                     Content = "Content of Lifestyle Post 1",
                     Author = "Alex Smith",
                     PublishedDate = new DateTime(2023, 1, 1), // Static date
