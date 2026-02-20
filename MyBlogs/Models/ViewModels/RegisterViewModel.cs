@@ -4,6 +4,10 @@ namespace MyBlogs.Models.ViewModels
 {
     public class RegisterViewModel
     {
+        [Required(ErrorMessage = "The Name is required")]
+        [Display(Name = "Full Name")]
+        public string Name { get; set; }
+
         [Required(ErrorMessage = "The Email is required")]
         [EmailAddress(ErrorMessage = "The Email is not valid")]
         public string Email {  get; set; }
