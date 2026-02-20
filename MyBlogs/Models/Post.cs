@@ -8,6 +8,7 @@ namespace MyBlogs.Models
     {
         [Key]
         public int Id { get; set; }
+
         [Required(ErrorMessage ="The titel is requred")]
         [MaxLength(400 , ErrorMessage ="The title cannot exceed 400 characters")]
         public string Title { get; set; }
@@ -15,6 +16,8 @@ namespace MyBlogs.Models
 
         [Required(ErrorMessage ="The content is required")]
         public string Content { get; set; }
+
+        public string? Slug { get; set; }
 
 
         [Required(ErrorMessage ="The Author name is requried")]

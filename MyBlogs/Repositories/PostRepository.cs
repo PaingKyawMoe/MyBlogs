@@ -32,6 +32,14 @@ namespace MyBlogs.Repositories
                 .FirstOrDefaultAsync(p => p.Id == id);
         }
 
+        public async Task<Post?> GetBySlugAsync(string slug)
+        {
+            return await _context.Posts
+                .Include(p => p.Category)
+                .Include(p => p.Comments)
+                .FirstOrDefaultAsync(p => p.Slug == slug);
+        }
+
         public async Task<Post?> GetByIdAsync(int id)
             => await _context.Posts.FirstOrDefaultAsync(p => p.Id == id);
 

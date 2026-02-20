@@ -90,6 +90,12 @@ app.UseAuthentication();
 app.UseAuthorization();
 app.MapStaticAssets();
 
+// Add "details" to the pattern to make it unique
+app.MapControllerRoute(
+    name: "postDetails",
+    pattern: "post/details/{slug}",
+    defaults: new { controller = "Post", action = "Detail" });
+
 app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Home}/{action=Index}/{id?}")
