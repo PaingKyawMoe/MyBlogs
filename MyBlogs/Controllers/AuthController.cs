@@ -1,26 +1,26 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using MyBlogs.Models; // Ensure this matches your ApplicationUser folder
 using MyBlogs.Models.ViewModels;
 
 namespace MyBlogs.Controllers
 {
     public class AuthController : Controller
     {
-        private readonly UserManager<IdentityUser> _userManager;
+        // Change IdentityUser to ApplicationUser here
+        private readonly UserManager<ApplicationUser> _userManager;
         private readonly RoleManager<IdentityRole> _roleManager;
-        private readonly SignInManager<IdentityUser> _signInManager;
+        private readonly SignInManager<ApplicationUser> _signInManager;
 
-        //register
-        //login
-        //logout 
-        public AuthController(UserManager<IdentityUser> userManager,
+        public AuthController(UserManager<ApplicationUser> userManager,
             RoleManager<IdentityRole> roleManager,
-            SignInManager<IdentityUser> signInManager)
+            SignInManager<ApplicationUser> signInManager)
         {
             _userManager = userManager;
             _roleManager = roleManager;
             _signInManager = signInManager;
         }
+
         [HttpGet]
         public IActionResult Register()
         {
@@ -30,22 +30,20 @@ namespace MyBlogs.Controllers
         [HttpPost]
         public async Task<IActionResult> Register(RegisterViewModel model)
         {
-            //check for validation
             if (ModelState.IsValid)
             {
-                //create user
-                var user = new IdentityUser
+                // CHANGE: Use ApplicationUser and map the Name property
+                var user = new ApplicationUser
                 {
                     UserName = model.Email,
-                    Email = model.Email
+                    Email = model.Email,
+                    Name = model.Name // This line saves the name to the DB
                 };
-                //save user
+
                 var result = await _userManager.CreateAsync(user, model.Password);
 
-                //check if user is created successfully
                 if (result.Succeeded)
                 {
-                    //assign role to user
                     if (!await _roleManager.RoleExistsAsync("User"))
                     {
                         await _roleManager.CreateAsync(new IdentityRole("User"));
@@ -53,6 +51,12 @@ namespace MyBlogs.Controllers
                     await _userManager.AddToRoleAsync(user, "User");
                     await _signInManager.SignInAsync(user, isPersistent: false);
                     return RedirectToAction("Index", "Post");
+                }
+
+                // Add errors to model state if creation fails
+                foreach (var error in result.Errors)
+                {
+                    ModelState.AddModelError("", error.Description);
                 }
             }
             return View(model);
@@ -69,14 +73,16 @@ namespace MyBlogs.Controllers
         {
             if (ModelState.IsValid)
             {
+                // ApplicationUser is handled automatically by the managers now
                 var user = await _userManager.FindByEmailAsync(model.Email);
                 if (user == null)
                 {
                     ModelState.AddModelError("", "Email or password is invalid");
                     return View(model);
-
                 }
-                var SignInresult = await _signInManager.PasswordSignInAsync(model.Email, model.Password, isPersistent: false, lockoutOnFailure: false);
+
+                var SignInresult = await _signInManager.PasswordSignInAsync(user, model.Password, isPersistent: false, lockoutOnFailure: false);
+
                 if (!SignInresult.Succeeded)
                 {
                     ModelState.AddModelError("", "Email or password is invalid");

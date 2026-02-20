@@ -27,6 +27,10 @@
     .comment-card {
         transition: transform 0.2s;
     }
+    .comment-date {
+    color: black; /* This is a gold color, change to whatever you like! */
+    font-weight: 500;
+}
 </style>
 
 <div class="content-wrapper">
@@ -59,11 +63,11 @@
             @* 1. Loop through Top-Level Comments *@
             @foreach (var comment in Model.Comments.Where(c => c.ParentId == null))
             {
-                <div class="card mb-3 shadow-sm border-0 bg-dark text-white comment-card">
+                <div class="card mb-3 shadow-sm border-0 bg-white text-black comment-card">
                     <div class="card-body">
                         <div class="d-flex justify-content-between">
                             <h5 class="card-title text-info">@comment.UserName</h5>
-                            <small class="text-muted">@comment.CommentDate.ToString("MMM dd, yyyy")</small>
+                            <small class="comment-date">@comment.CommentDate.ToString("MMM dd, yyyy")</small>
                         </div>
                         <p class="card-text">@comment.Content</p>
                         
@@ -81,7 +85,7 @@
                 @* 2. Loop through Replies for THIS comment *@
                 @foreach (var reply in Model.Comments.Where(c => c.ParentId == comment.Id))
                 {
-                    <div class="card mb-2 shadow-sm reply-indent bg-secondary bg-opacity-10 text-white border-0">
+                    <div class="card mb-2 shadow-sm reply-indent bg-secondary  text-white border-0">
                         <div class="card-body py-2">
                             <div class="d-flex align-items-center mb-1">
                                 <h6 class="fw-bold mb-0 text-info">@reply.UserName</h6>
@@ -131,6 +135,3 @@
     }
 </div>
 
-@section Scripts {
-    
-}

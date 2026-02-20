@@ -14,6 +14,13 @@
             <div asp-validation-summary="All" class="text-danger small mb-3"></div>
 
             <div class="mb-3">
+    <label asp-for="Name" class="form-label text-light small fw-medium">Full Name</label>
+    <input asp-for="Name" class="form-control" placeholder="Enter your name" />
+    <span asp-validation-for="Name" class="text-danger small"></span>
+</div>
+
+
+            <div class="mb-3">
                 <label asp-for="Email" class="form-label text-light small fw-medium">Email Address</label>
                 <input asp-for="Email" class="form-control" placeholder="example@mail.com" />
                 <span asp-validation-for="Email" class="text-danger small"></span>
