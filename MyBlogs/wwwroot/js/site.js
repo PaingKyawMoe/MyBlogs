@@ -1,26 +1,24 @@
 ﻿
 // --- 1. LIKE BUTTON LOGIC ---
-$(document).ready(function () {
-    $(".like-btn").click(function () {
-        var postId = $(this).data("id");
-        var button = $(this);
+$(".like-btn").click(function () {
+    var button = $(this);
+    var postId = button.data("id");
+    var url = button.data("url"); // Get the URL from the button
+    var token = $('meta[name="csrf-token"]').attr("content");
 
-        $.ajax({
-            url: '/Post/LikePost', // Make sure this matches your Controller/Action
-            type: 'POST',
-            data: { id: postId },
-            success: function (response) {
-                // This updates the number inside the span
-                $(".like-count-" + postId).text(response.count);
-
-                // Optional: make the heart solid
-                button.find("i").removeClass("bi-heart").addClass("bi-heart-fill");
-                button.addClass("btn-danger text-white").removeClass("btn-outline-danger");
-            },
-            error: function () {
-                alert("Error liking post.");
-            }
-        });
+    $.ajax({
+        url: url,
+        type: 'POST',
+        headers: { "RequestVerificationToken": token },
+        data: { id: postId },
+        success: function (response) {
+            $(".like-count-" + postId).text(response.count);
+            button.find("i").removeClass("bi-heart").addClass("bi-heart-fill");
+            button.addClass("btn-danger text-white").removeClass("btn-outline-danger");
+        },
+        error: function (xhr) {
+            console.log("Error:", xhr.statusText);
+        }
     });
 });
 

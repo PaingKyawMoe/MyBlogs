@@ -30,6 +30,7 @@
 </div>
 
 <div class="container">
+    @Html.AntiForgeryToken()
     @if(User.IsInRole("Admin")){
         <div class="text-end my-2">
             <a class="btn btn-primary" asp-action="Create" asp-controller="Post">Create New Post</a>
@@ -67,8 +68,10 @@
 </a>
 
                             @* The Like Button *@
-       <button class="btn btn-outline-danger btn-sm like-btn d-inline-flex align-items-center" data-id="@post.Id">
-    <i class="bi bi-heart me-2"></i> 
+       <button class="btn btn-outline-danger btn-sm like-btn" 
+        data-id="@post.Id" 
+        data-url="@Url.Action("LikePost", "Post")">
+    <i class="bi bi-heart"></i>
     <span class="like-count-@post.Id">@post.LikeCount</span>
 </button>
                         </div>
