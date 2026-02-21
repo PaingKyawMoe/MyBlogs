@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using MyBlogs.Data;
 using MyBlogs.Infrastructure;
 using MyBlogs.Infrastructure.Interfaces;
-using MyBlogs.Models; // 1. ADD THIS to access ApplicationUser
+using MyBlogs.Models; 
 using MyBlogs.Repositories;
 using MyBlogs.Repositories.Interfaces;
 using MyBlogs.Services;
@@ -17,6 +17,14 @@ builder.Services.AddControllersWithViews();
 builder.Services.AddDbContext<AppDbContext>(options =>
 {
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"));
+});
+
+// redis cache configuration
+builder.Services.AddStackExchangeRedisCache(options =>
+{
+    // The format is: host:port,password=your_password
+    options.Configuration = "redis-11039.c1.ap-southeast-1-1.ec2.cloud.redislabs.com:11039,password=2tLwrtdfJvh5paadPTBuxEvHs8cFxGPM";
+    options.InstanceName = "MyBlogs_";
 });
 
 // 2. CHANGE IdentityUser to ApplicationUser
