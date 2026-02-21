@@ -1,2 +1,2 @@
-This is my ASP.net CRUD oprations project:
-In this Project contains Authorization and Role Based Access Control.
+This is my ASP.net project:
+In this Project contains Authorization ,Stored Procedures , Redis caching and RESTful API and Role Based Access Control.
