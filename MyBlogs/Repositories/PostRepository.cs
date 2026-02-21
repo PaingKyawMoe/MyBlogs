@@ -57,15 +57,27 @@ namespace MyBlogs.Repositories
             _context.Posts.Remove(post);
             return Task.CompletedTask;
         }
+
         public async Task AddCommentAsync(Comment comment)
         {
             await _context.Comments.AddAsync(comment);
         }
+
         public async Task<List<Category>> GetCategoriesAsync()
         {
             return await _context.Categories.ToListAsync();
         }
-      
+
+        public async Task<int> LikePostAsync(int id)
+        {
+            // Executes the stored procedure and retrieves the updated count
+            // The {0} placeholder prevents SQL Injection
+            var result = await _context.Database
+                .SqlQueryRaw<int>("EXEC sp_LikePost @PostId = {0}", id)
+                .ToListAsync();
+
+            return result.FirstOrDefault();
+        }
 
         public async Task SaveAsync()
             => await _context.SaveChangesAsync();

@@ -19,6 +19,7 @@ html {
 
 body {
     margin-bottom: 60px;
+    font-family: "Roboto", sans-serif;
 }
 
 .form-floating > .form-control-plaintext::placeholder, .form-floating > .form-control::placeholder {
@@ -190,7 +191,7 @@ select.form-control {
     padding: 20px;
     max-width: 1000px;
     margin: 0 auto;
-    font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
+    font-family: 'Roboto','Poppins';
 }
 
 .feature-image {
@@ -209,3 +210,5 @@ select.form-control {
 .comment-card {
     transition: transform 0.2s;
 }
+
+@import url('https://fonts.googleapis.com/css2?family=Lato:ital,wght@0,100;0,300;0,400;0,700;0,900;1,100;1,300;1,400;1,700;1,900&family=Rethink+Sans:ital,wght@0,400..800;1,400..800&family=Roboto:ital,wght@0,100..900;1,100..900&family=Work+Sans:ital,wght@0,100..900;1,100..900&family=Zalando+Sans:ital,wght@0,200..900;1,200..900&display=swap');

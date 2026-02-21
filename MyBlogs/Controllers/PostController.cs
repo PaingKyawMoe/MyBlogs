@@ -177,6 +177,7 @@ namespace MyBlogs.Controllers
         }
 
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public async Task<IActionResult> LikePost(int id)
         {
             var newCount = await _service.LikePostAsync(id);

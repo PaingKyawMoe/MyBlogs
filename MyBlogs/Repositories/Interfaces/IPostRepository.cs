@@ -13,6 +13,7 @@ namespace MyBlogs.Repositories.Interfaces
         Task DeleteAsync(Post post);
         Task SaveAsync();
         Task AddCommentAsync(Comment comment);
+        Task<int> LikePostAsync(int id);
         Task<List<Category>> GetCategoriesAsync();
 
     }
