@@ -79,6 +79,12 @@ namespace MyBlogs.Repositories
             return result.FirstOrDefault();
         }
 
+        public async Task ExecuteStoredProcedureAsync(string sql, params object[] parameters)
+        {
+            // Uses the existing _context to run raw SQL safely
+            await _context.Database.ExecuteSqlRawAsync(sql, parameters);
+        }
+
         public async Task SaveAsync()
             => await _context.SaveChangesAsync();
     }

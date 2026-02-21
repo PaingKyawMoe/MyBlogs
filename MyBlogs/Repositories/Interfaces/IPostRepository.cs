@@ -15,6 +15,7 @@ namespace MyBlogs.Repositories.Interfaces
         Task AddCommentAsync(Comment comment);
         Task<int> LikePostAsync(int id);
         Task<List<Category>> GetCategoriesAsync();
+        Task ExecuteStoredProcedureAsync(string sql, params object[] parameters);
 
     }
 

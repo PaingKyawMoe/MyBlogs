@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using System.Text.Json.Serialization;
 
 namespace MyBlogs.Models
 {
@@ -12,6 +13,7 @@ namespace MyBlogs.Models
         public string Name { get; set; } = string.Empty;
         public string? Description { get; set; }//it also should be nullable
 
+        [JsonIgnore]
         public virtual ICollection<Post> Posts { get; set; }//this is navigation properties
     }
 }
