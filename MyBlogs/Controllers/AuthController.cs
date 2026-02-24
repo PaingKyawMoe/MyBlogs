@@ -1,33 +1,39 @@
 ﻿using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.AspNetCore.Mvc;
-using MyBlogs.Models; // Ensure this matches your ApplicationUser folder
-using MyBlogs.Models.ViewModels;
-using Microsoft.AspNetCore.Identity.UI.Services; // ADD THIS
 using Microsoft.Extensions.Caching.Distributed;
-using MyBlogs.Infrastructure;
+using MyBlogs.Infrastructure.Interfaces;
+using MyBlogs.Models;
+using MyBlogs.Models.ViewModels;
+using Microsoft.Extensions.Configuration;
 
 namespace MyBlogs.Controllers
 {
     public class AuthController : Controller
     {
-        // Change IdentityUser to ApplicationUser here
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly RoleManager<IdentityRole> _roleManager;
         private readonly SignInManager<ApplicationUser> _signInManager;
         private readonly IDistributedCache _cache;
         private readonly IEmailSender _emailSender;
+        private readonly IViewRenderService _viewRenderer;
+        private readonly IConfiguration _config;
 
         public AuthController(UserManager<ApplicationUser> userManager,
             RoleManager<IdentityRole> roleManager,
             IDistributedCache cache,
             SignInManager<ApplicationUser> signInManager,
-            IEmailSender emailSender)
+            IEmailSender emailSender,
+            IViewRenderService viewRenderer,
+            IConfiguration config)
         {
             _userManager = userManager;
             _roleManager = roleManager;
             _signInManager = signInManager;
             _emailSender = emailSender;
             _cache = cache;
+            _viewRenderer = viewRenderer;
+            _config = config;
         }
 
         [HttpGet]
@@ -50,10 +56,11 @@ namespace MyBlogs.Controllers
                     var options = new DistributedCacheEntryOptions { AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes(10) };
                     await _cache.SetStringAsync(user.Email, otp, options);
 
-                    await _emailSender.SendEmailAsync(user.Email, "Your Verification Code",
-                        $"Your verification code is: <strong>{otp}</strong>");
+                    // CHANGE 3: Use the view renderer instead of a raw string
+                    string emailBody = await _viewRenderer.RenderToStringAsync("Emails/Verification", otp);
 
-                    // Pass the email to the view so it can be used for the hidden field
+                    await _emailSender.SendEmailAsync(user.Email, "Your Verification Code", emailBody);
+
                     return View("ConfirmEmailPending", user.Email);
                 }
                 foreach (var error in result.Errors) ModelState.AddModelError("", error.Description);
@@ -71,7 +78,7 @@ namespace MyBlogs.Controllers
                 return View("ConfirmEmailPending", email);
             }
 
-            string storedOtp = await _cache.GetStringAsync(email);
+            string? storedOtp = await _cache.GetStringAsync(email);
 
             if (storedOtp != null && storedOtp == code)
             {
@@ -89,6 +96,19 @@ namespace MyBlogs.Controllers
             return View("ConfirmEmailPending", email); // Return the email so the form stays filled
         }
 
+        private async Task<bool> IsHuman(string captchaResponse)
+        {
+            var secretKey = _config["Authentication:GoogleReCaptcha:SecretKey"];
+            using var client = new HttpClient();
+            var response = await client.PostAsync(
+                $"https://www.google.com/recaptcha/api/siteverify?secret={secretKey}&response={captchaResponse}",
+                null);
+
+            var jsonResponse = await response.Content.ReadAsStringAsync();
+            // You'll need a small JSON model to deserialize 'success'
+            return jsonResponse.Contains("\"success\": true");
+        }
+
         [HttpGet]
         public IActionResult Login()
         {
@@ -100,7 +120,13 @@ namespace MyBlogs.Controllers
         {
             if (ModelState.IsValid)
             {
-                // ApplicationUser is handled automatically by the managers now
+                string captchaResponse = Request.Form["g-recaptcha-response"].ToString()?? "";
+                if (!await IsHuman(captchaResponse))
+                {
+                    ModelState.AddModelError("", "Please prove you are not a robot.");
+                    return View(model);
+                }
+                // ApplicationUser is handled automatically by the managers now?
                 var user = await _userManager.FindByEmailAsync(model.Email);
                 if (user == null)
                 {

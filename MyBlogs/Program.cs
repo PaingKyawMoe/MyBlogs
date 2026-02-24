@@ -43,6 +43,7 @@ builder.Services.AddTransient<Microsoft.AspNetCore.Identity.UI.Services.IEmailSe
 builder.Services.AddScoped<IPostRepository, PostRepository>();
 builder.Services.AddScoped<IFileService, FileService>();
 builder.Services.AddScoped<IPostService, PostService>();
+builder.Services.AddScoped<IViewRenderService, ViewRenderService>();
 
 builder.Services.ConfigureApplicationCookie(options =>
 {

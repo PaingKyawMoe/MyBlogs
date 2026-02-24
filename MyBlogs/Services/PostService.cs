@@ -38,7 +38,10 @@ namespace MyBlogs.Services
             if (!string.IsNullOrEmpty(cachedPosts))
             {
                 // Return cached data if available
-                return JsonSerializer.Deserialize<List<Post>>(cachedPosts);
+                var cachedList = JsonSerializer.Deserialize<List<Post>>(cachedPosts);
+
+                // Return the deserialized list, or an empty list if it's null
+                return cachedList ?? new List<Post>();
             }
 
             // 2. Cache Miss: Fetch data from the database via Repository
@@ -85,23 +88,23 @@ namespace MyBlogs.Services
             var existing = await _repo.GetByIdAsync(model.Post.Id);
             if (existing == null) throw new Exception("Post not found");
 
-            string imagePath = existing.FeatureImagePath;
+            string imagePath = existing.FeatureImagePath ?? string.Empty;
             if (model.FeatureImage != null)
             {
-                _fileService.Delete(existing.FeatureImagePath);
+                _fileService.Delete(existing.FeatureImagePath ?? string.Empty);
                 imagePath = await _fileService.UploadAsync(model.FeatureImage);
             }
 
             // Now it's short, clean, and readable
             var parameters = new[] {
-        new SqlParameter("@Id", model.Post.Id),
-        new SqlParameter("@Title", model.Post.Title),
-        new SqlParameter("@Content", model.Post.Content),
-        new SqlParameter("@CategoryId", model.Post.CategoryId),
-        new SqlParameter("@Author", model.Post.Author),
-        new SqlParameter("@Slug", UrlHelper.GenerateSlug(model.Post.Title)),
-        new SqlParameter("@ImagePath", imagePath)
-    };
+            new SqlParameter("@Id", model.Post.Id),
+            new SqlParameter("@Title", model.Post.Title),
+            new SqlParameter("@Content", model.Post.Content),
+            new SqlParameter("@CategoryId", model.Post.CategoryId),
+            new SqlParameter("@Author", model.Post.Author),
+            new SqlParameter("@Slug", UrlHelper.GenerateSlug(model.Post.Title)),
+            new SqlParameter("@ImagePath", imagePath)
+            };
 
             await _repo.ExecuteStoredProcedureAsync(
                 "EXEC sp_UpdatePost @Id, @Title, @Content, @CategoryId, @Author, @Slug, @ImagePath",
@@ -115,7 +118,7 @@ namespace MyBlogs.Services
             var post = await _repo.GetByIdAsync(id);
             if (post == null) return;
 
-            _fileService.Delete(post.FeatureImagePath);
+            _fileService.Delete(post.FeatureImagePath ?? string.Empty);
 
             await _repo.DeleteAsync(post);
             await _repo.SaveAsync();

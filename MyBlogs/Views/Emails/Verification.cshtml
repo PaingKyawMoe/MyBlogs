@@ -1,0 +1,40 @@
+﻿@model string
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>Verify your email</title>
+</head>
+<body style="margin: 0; padding: 0; font-family: 'Segoe UI', Arial, sans-serif; background-color: #f4f4f4;">
+    <table width="100%" cellpadding="0" cellspacing="0" border="0" style="background-color: #f4f4f4; padding: 20px;">
+        <tr>
+            <td align="center">
+                <table width="600" cellpadding="0" cellspacing="0" border="0" style="background-color: #ffffff; border-radius: 8px; border: 1px solid #dddddd; overflow: hidden;">
+                    <tr>
+                        <td style="padding: 30px; background-color: #007bff; text-align: center;">
+                            <h1 style="color: #ffffff; margin: 0;">MyBlogs</h1>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td style="padding: 40px; text-align: center; color: #333333;">
+                            <h2 style="margin-top: 0;">Verification Required</h2>
+                            <p style="font-size: 16px; line-height: 1.5;">Welcome! To finish setting up your account, please use the code below:</p>
+                            
+                            <div style="margin: 30px 0; padding: 20px; background-color: #f8f9fa; border: 2px dashed #007bff; display: inline-block;">
+                                <span style="font-size: 32px; font-weight: bold; color: #007bff; letter-spacing: 5px;">@Model</span>
+                            </div>
+                            
+                            <p style="font-size: 14px; color: #777777;">This code will expire in 10 minutes.</p>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td style="padding: 20px; text-align: center; font-size: 12px; color: #aaaaaa; background-color: #eeeeee;">
+                            &copy; 2026 MyBlogs Inc. All rights reserved.
+                        </td>
+                    </tr>
+                </table>
+            </td>
+        </tr>
+    </table>
+</body>
+</html>
