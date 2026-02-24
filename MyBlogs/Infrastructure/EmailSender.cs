@@ -3,7 +3,7 @@ using System.Net;
 using System.Net.Mail;
 using Microsoft.Extensions.Configuration;
 
-namespace MyBlogs.Infrastructure // Ensure this matches your folder structure
+namespace MyBlogs.Infrastructure 
 {
     public class EmailSender : IEmailSender
     {

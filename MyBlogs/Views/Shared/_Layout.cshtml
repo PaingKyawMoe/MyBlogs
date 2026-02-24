@@ -27,10 +27,54 @@
 
     <footer class="border-top footer text-muted mt-5 py-3">
         <div class="container">
-            &copy; 2026 - MyBlogs - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
-        </div>
-    </footer>
+        <div class="row g-4">
+            <div class="col-md-3">
+                <h5 class="text-primary fw-bold mb-3">MYBLOGS</h5>
+                <p class="text-secondary medium">
+                    Transforming aspiring writers into professional bloggers through high-quality, community-driven content.
+                </p>
+                <div class="d-flex gap-3">
+                    <a href="#" class="text-white"><i class="bi bi-facebook"></i></a>
+                    <a href="#" class="text-white"><i class="bi bi-twitter"></i></a>
+                    <a href="#" class="text-white"><i class="bi bi-linkedin"></i></a>
+                </div>
+            </div>
 
+            <div class="col-md-3">
+                <h6 class="fw-bold mb-3">Quick Links</h6>
+                <ul class="list-unstyled text-secondary medium">
+                    <li class="mb-2"><a asp-controller="Post" asp-action="Index" class="text-decoration-none text-secondary">All Posts</a></li>
+                    <li class="mb-2"><a href="#" class="text-decoration-none text-secondary">Categories</a></li>
+                    <li class="mb-2"><a asp-controller="Home" asp-action="Privacy" class="text-decoration-none text-secondary">Privacy Policy</a></li>
+                </ul>
+            </div>
+
+            <div class="col-md-3">
+                <h6 class="fw-bold mb-3">Contact Us</h6>
+                <ul class="list-unstyled text-secondary medium">
+                    <li class="mb-2"><i class="bi bi-geo-alt me-2"></i>Yangon, Myanmar</li>
+                    <li class="mb-2"><i class="bi bi-envelope me-2"></i>info@myblogs.com</li>
+                    <li class="mb-2"><i class="bi bi-clock me-2"></i>Mon-Sat: 9AM - 5PM</li>
+                </ul>
+            </div>
+
+            <div class="col-md-3">
+                <h6 class="fw-bold mb-3">Newsletter</h6>
+                <p class="text-secondary small">Join our community for weekly updates.</p>
+                <div class="input-group input-group-sm">
+                    <input type="email" class="form-control" placeholder="Email address">
+                    <button class="btn btn-primary" type="button">Join</button>
+                </div>
+            </div>
+        </div>
+        </div>
+         <hr class="text-secondary mt-5 my-0">
+        <p class="text-center text-secondary small mb-0">
+            &copy; @DateTime.Now.Year MyBlogs. All rights reserved.
+        </p>
+ </footer>
+   
+    <script src="https://www.google.com/recaptcha/api.js" async defer></script>
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
