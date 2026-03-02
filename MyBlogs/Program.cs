@@ -56,48 +56,55 @@ builder.Services.ConfigureApplicationCookie(options =>
 var app = builder.Build();
 
 // SEEDING SECTION
+// SEEDING SECTION
 using (var scope = app.Services.CreateScope())
 {
-    // 3. CHANGE IdentityUser to ApplicationUser here as well
-    var _userManager = scope.ServiceProvider.GetRequiredService<UserManager<ApplicationUser>>();
-    var _roleManager = scope.ServiceProvider.GetRequiredService<RoleManager<IdentityRole>>();
-
-    string adminEmail = "admin@gmail.com";
-    string adminPassword = "admin";
-
-    var existingAdminRole = await _roleManager.FindByNameAsync("Admin");
-    if (existingAdminRole == null)
+    try
     {
-        var adminRole = new IdentityRole("Admin");
-        await _roleManager.CreateAsync(adminRole);
-    }
+        var _userManager = scope.ServiceProvider.GetRequiredService<UserManager<ApplicationUser>>();
+        var _roleManager = scope.ServiceProvider.GetRequiredService<RoleManager<IdentityRole>>();
 
-    var existingAdminUser = await _userManager.FindByEmailAsync(adminEmail);
-    if (existingAdminUser == null)
-    {
-        // 4. Use ApplicationUser and provide a default Name for the admin
-        var adminUser = new ApplicationUser
+        string adminEmail = "admin@gmail.com";
+        string adminPassword = "admin"; // Note: Identity usually requires a stronger password by default
+
+        var existingAdminRole = await _roleManager.FindByNameAsync("Admin");
+        if (existingAdminRole == null)
         {
-            UserName = adminEmail,
-            Email = adminEmail,
-            Name = "System Admin"
-        };
-        var result = await _userManager.CreateAsync(adminUser, adminPassword);
-        if (result.Succeeded)
-        {
-            await _userManager.AddToRoleAsync(adminUser, "Admin");
+            await _roleManager.CreateAsync(new IdentityRole("Admin"));
         }
+
+        var existingAdminUser = await _userManager.FindByEmailAsync(adminEmail);
+        if (existingAdminUser == null)
+        {
+            var adminUser = new ApplicationUser
+            {
+                UserName = adminEmail,
+                Email = adminEmail,
+                Name = "System Admin",
+                EmailConfirmed = true // Crucial if your config requires confirmed email
+            };
+            var result = await _userManager.CreateAsync(adminUser, adminPassword);
+            if (result.Succeeded)
+            {
+                await _userManager.AddToRoleAsync(adminUser, "Admin");
+            }
+        }
+    }
+    catch (Exception ex)
+    {
+        // This prevents the app from crashing if seeding fails
+        var logger = scope.ServiceProvider.GetRequiredService<ILogger<Program>>();
+        logger.LogError(ex, "An error occurred during seeding the database.");
     }
 }
 
 // ... rest of your pipeline (app.UseHttpsRedirection, etc.)
 if (!app.Environment.IsDevelopment())
 {
-    app.UseExceptionHandler("/Home/Error");
-    app.UseHsts();
+    app.UseHttpsRedirection();
 }
 
-app.UseHttpsRedirection();
+//app.UseHttpsRedirection();
 app.UseRouting();
 app.UseAuthentication();
 app.UseAuthorization();
