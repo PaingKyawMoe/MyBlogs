@@ -12,3 +12,7 @@ The application includes secure authentication, optimized database operations, p
 ⚡ Redis Caching for improved performance and reduced database load
 
 🌐 RESTful API development for external integration
+
+🐳 Docker Containerization for consistent development, testing, and production environments
+
+🚀 Docker Compose support for multi-service setup (API, Database, Redis)
